@@ -6,10 +6,10 @@ DWORD GetProcId(const wchar_t *procName) {
     HANDLE handleSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
     if (handleSnapshot != INVALID_HANDLE_VALUE) {
-        PROCESSENTRY32 procEntry;
+        PROCESSENTRY32W procEntry;
         procEntry.dwSize = sizeof(procEntry);
 
-        while (Process32Next(handleSnapshot, &procEntry)) {
+        while (Process32NextW(handleSnapshot, &procEntry)) {
             if (_wcsicmp((wchar_t *)procEntry.szExeFile, procName) == 0) {
                 procId = procEntry.th32ProcessID;
                 break;
@@ -29,11 +29,11 @@ uintptr_t GetModuleBaseAddress(DWORD procId, const wchar_t *moduleName) {
         TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, procId);
 
     if (handleSnapshot != INVALID_HANDLE_VALUE) {
-        MODULEENTRY32 moduleEntry;
+        MODULEENTRY32W moduleEntry;
 
         moduleEntry.dwSize = sizeof(moduleEntry);
 
-        while (Module32Next(handleSnapshot, &moduleEntry)) {
+        while (Module32NextW(handleSnapshot, &moduleEntry)) {
             if (_wcsicmp((wchar_t *)moduleEntry.szModule, moduleName) == 0) {
                 address = (uintptr_t)moduleEntry.modBaseAddr;
                 break;
